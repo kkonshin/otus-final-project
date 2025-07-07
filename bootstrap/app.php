@@ -9,9 +9,21 @@ return Application::configure(basePath: dirname(__DIR__))
         web: __DIR__.'/../routes/web.php',
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
+//        then: function () {
+//            Route::middleware('api')
+//                ->prefix('api/user')
+//                ->name('user.')
+//                ->group(base_path('app/Containers/UserContainer/UI/API/Routes/api.php'));
+//        },
     )
     ->withMiddleware(function (Middleware $middleware): void {
         //
+    })
+    ->withCommands([
+//        __DIR__.'/../app/Containers/UserContainer/UI/CLI/Commands',
+    ])
+    ->withSchedule(function (Schedule $schedule) {
+//        $schedule->command('passport:purge --expired')->daily();
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
