@@ -4,7 +4,7 @@ namespace App\Containers\UserContainer\UI\API\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class RegistrationRequest extends FormRequest
+class LoginRequest extends FormRequest
 {
 
     /**
@@ -25,25 +25,14 @@ class RegistrationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'first_name' => [
-                'nullable',
-                'string',
-                'max:255',
-            ],
-            'last_name' => [
-                'nullable',
-                'string',
-                'max:255',
-            ],
             'email' => [
                 'required',
+                'string',
                 'email',
-                'unique:users',
             ],
             'password' => [
                 'required',
                 'string',
-                'confirmed',
             ],
         ];
     }
@@ -57,8 +46,6 @@ class RegistrationRequest extends FormRequest
     {
         return [
             'required' => 'Введите :attribute',
-            'max' => 'Превышена длинна :attribute',
-            'confirmed' => 'Данные не совпадают :attribute',
             'unique' => 'Такой E-mail уже зарегистрирован',
             'email.email' => 'Не корректный :attribute',
         ];
@@ -73,8 +60,6 @@ class RegistrationRequest extends FormRequest
     {
         return [
             'email' => 'E-mail адрес',
-            'first_name' => 'Имя',
-            'last_name' => 'Фамилия',
             'password' => 'Пароль',
         ];
     }

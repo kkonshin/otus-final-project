@@ -7,7 +7,6 @@ use App\Containers\UserContainer\Actions\RegistrationUserAction;
 use App\Containers\UserContainer\Contracts\LoginUserActionContract;
 use App\Containers\UserContainer\Contracts\RegistrationUserActionContract;
 use Illuminate\Support\ServiceProvider;
-//use Laravel\Passport\Passport;
 
 final class UserServiceProvider extends ServiceProvider
 {
@@ -19,10 +18,6 @@ final class UserServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->loadMigrationsFrom("app/Containers/UserContainer/Migrations");
-
-//        Passport::tokensExpireIn(now()->addDays(15));
-//        Passport::refreshTokensExpireIn(now()->addDays(30));
-//        Passport::personalAccessTokensExpireIn(now()->addMonths(6));
     }
 
     /**
