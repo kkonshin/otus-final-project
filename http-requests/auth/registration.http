@@ -1,0 +1,26 @@
+### Регистрация
+POST {{host}}/api/user/registration
+Content-Type: application/json
+Accept: application/json
+
+{
+    "first_name": "Dev",
+    "last_name": "User",
+    "email": "dev@example.com",
+    "password": "password123",
+    "password_confirmation": "password123"
+}
+
+> {%
+    if (response.status === 200) {
+        client.global.set("auth_token", response.body.data.token);
+        client.test("Token saved", function() {
+            client.assert(client.global.get("auth_token") !== null, "Токен не был сохранён");
+        });
+        client.global.set("user_email", response.body.data.user.email);
+        client.global.set("user_id", response.body.data.user.id);
+    }
+
+    // Логирование для отладки
+    client.log("Токен сохранён: " + client.global.get("auth_token"));
+%}
