@@ -4,9 +4,9 @@
 
 `docker-compose run --rm composer install`
 
-`docker-compose exec bindroom-app php artisan key:generate`
+`docker-compose exec app php artisan key:generate`
 
-`docker-compose exec bindroom-app php artisan migrate`
+`docker-compose exec app php artisan migrate`
 
 `
 docker-compose exec app chown -R www-data:www-data /var/www/public
