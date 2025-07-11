@@ -22,4 +22,4 @@ docker-compose build app
 docker-compose up -d`
 
 ## Проверка расширения редис
-`docker-compose exec bindroom-app php -m | grep redis`
+`docker-compose exec app php -m | grep redis`

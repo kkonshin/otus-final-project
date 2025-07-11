@@ -1,6 +1,5 @@
 FROM php:8.4-fpm
 
-# Install dependencies
 RUN apt-get update && apt-get install -y \
     apt-utils \
     libpq-dev \
@@ -16,8 +15,14 @@ RUN apt-get update && apt-get install -y \
     docker-php-ext-install zip && \
     apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-# Copy custom php.ini
 COPY ./docker/app/php.ini /usr/local/etc/php/conf.d/php.ini
+COPY ./docker/app/xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
+
+USER root
+
+RUN pecl channel-update pecl.php.net && \
+    pecl install xdebug && \
+    docker-php-ext-enable xdebug
 
 ENV COMPOSER_ALLOW_SUPERUSER=1
 
