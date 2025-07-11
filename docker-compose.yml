@@ -15,6 +15,10 @@ services:
             - db
         networks:
             - app-network
+        environment:
+            PHP_IDE_CONFIG: "serverName=${APP_NAME}"
+        extra_hosts:
+            - 'host.docker.internal:host-gateway'
 
     # Nginx Service
     webserver:
