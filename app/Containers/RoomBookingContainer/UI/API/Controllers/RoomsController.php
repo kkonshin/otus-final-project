@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Containers\BindRoomContainer\UI\API\Controllers;
+namespace App\Containers\RoomBookingContainer\UI\API\Controllers;
 
 use Illuminate\Routing\Controller;
 
@@ -49,6 +49,16 @@ class RoomsController extends Controller
     }
 
     public function removeRoomsFromPool()
+    {
+
+    }
+
+    public function addRoomEquipment()
+    {
+
+    }
+
+    public function removeRoomEquipment()
     {
 
     }

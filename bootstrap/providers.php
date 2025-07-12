@@ -8,4 +8,5 @@ return [
      */
     App\Containers\UserContainer\Providers\UserServiceProvider::class,
     App\Containers\Common\ContainerTree\Providers\ContainerTreeServiceProvider::class,
+    App\Containers\RoomBookingContainer\Providers\RoomBookingServiceProvider::class,
 ];
