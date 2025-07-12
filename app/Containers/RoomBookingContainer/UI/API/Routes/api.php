@@ -13,6 +13,6 @@ Route::get('/available', [RoomsController::class, 'getAvailable'])
     ->name('get-available-rooms');
 
 // TODO массив параметров
-Route::get('/equipment/{rooms}', [RoomsController::class, 'getRoomsEquipment'])
+Route::get('/equipment', [RoomsController::class, 'getRoomsEquipment'])
     ->name('get-rooms-equipment');
 
