@@ -1,5 +1,5 @@
 ### Регистрация
-POST {{host}}/api/user/registration
+POST {{host}}/api/v1/user/registration
 Content-Type: application/json
 Accept: application/json
 

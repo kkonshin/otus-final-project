@@ -35,7 +35,7 @@ final class ApiRouteServiceProvider extends ServiceProvider
      */
     public function map(): void
     {
-        Route::prefix('api/user')
+        Route::prefix('api/v1/user')
             ->middleware('api')
             ->namespace($this->namespace)
             ->group(base_path('app/Containers/UserContainer/UI/API/Routes/api.php'));
