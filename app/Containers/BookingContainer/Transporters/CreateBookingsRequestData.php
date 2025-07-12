@@ -9,7 +9,6 @@ class CreateBookingsRequestData extends Data
 {
     public function __construct(
         public int $userId,
-        public string $status,
         public DateTime $startAt,
         public DateTime $endAt
     ) {
