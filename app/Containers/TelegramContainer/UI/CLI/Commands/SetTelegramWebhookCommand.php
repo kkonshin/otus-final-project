@@ -34,7 +34,7 @@ class SetTelegramWebhookCommand extends Command
         try {
             $url = $this->argument('url') ?? config('telegram.bots.bindroom_bot.webhook_url');
 
-            if (empty($test)) {
+            if (empty($url)) {
                 throw new SetTelegramWebhookException('Webhook URL for Telegram not specified', 500);
             }
 

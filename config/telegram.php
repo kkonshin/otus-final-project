@@ -46,7 +46,7 @@ return [
             ],
             'commands' => [
                 'start' => Telegram\StartCommand::class,
-                'rooms' => Telegram\RoomListCommand::class,
+                'room_list' => Telegram\RoomListCommand::class,
             ],
         ],
 

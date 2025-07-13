@@ -2,23 +2,19 @@
 
 namespace App\Containers\TelegramContainer\UI\CLI\Telegram;
 
+use App\Containers\RoomBookingContainer\Models\Room;
 use Telegram\Bot\Commands\Command;
 use Telegram\Bot\Keyboard\Keyboard;
-use App\Models\MeetingRoom;
 
 class RoomListCommand extends Command
 {
-    protected string $name = 'rooms';
+    protected string $name = 'room_list';
     protected string $description = 'Показать список доступных комнат';
-    protected string $pattern = '{page}'; // Добавляем поддержку пагинации
 
-    public function handle()
+    public function handle(): void
     {
-        $page = (int)$this->argument('page', 1);
-        $perPage = 5;
 
-        $rooms = MeetingRoom::where('is_active', true)
-            ->paginate($perPage, ['*'], 'page', $page);
+        $rooms = Room::query()->get();
 
         if ($rooms->isEmpty()) {
             $this->replyWithMessage([
@@ -33,31 +29,10 @@ class RoomListCommand extends Command
         foreach ($rooms as $room) {
             $keyboard->row([
                 Keyboard::inlineButton([
-                    'text' => "🏢 {$room->name} ({$room->capacity} чел.)",
+                    'text' => "🏢 {$room->title} ({$room->capacity} чел.)",
                     'callback_data' => "room_detail_{$room->id}"
                 ])
             ]);
-        }
-
-        // Добавляем пагинацию
-        if ($rooms->hasPages()) {
-            $paginationRow = [];
-
-            if ($rooms->currentPage() > 1) {
-                $paginationRow[] = Keyboard::inlineButton([
-                    'text' => '⬅️ Назад',
-                    'callback_data' => "room_list_page_" . ($page - 1)
-                ]);
-            }
-
-            if ($rooms->currentPage() < $rooms->lastPage()) {
-                $paginationRow[] = Keyboard::inlineButton([
-                    'text' => 'Вперед ➡️',
-                    'callback_data' => "room_list_page_" . ($page + 1)
-                ]);
-            }
-
-            $keyboard->row($paginationRow);
         }
 
         $this->replyWithMessage([
@@ -66,5 +41,4 @@ class RoomListCommand extends Command
             'parse_mode' => 'HTML'
         ]);
     }
-}
 }

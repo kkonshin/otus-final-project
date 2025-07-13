@@ -12,18 +12,32 @@ class StartCommand extends Command
 
     public function handle(): void
     {
-        $keyboard = Keyboard::make()
-            ->row([
-                Keyboard::button(['text' => '🏢 Список комнат', 'callback_data' => 'room_list']),
-                Keyboard::button(['text' => '📅 Мои бронирования', 'callback_data' => 'my_bookings']),
+        $keyboard = Keyboard::make()->inline(); // Важно: делаем клавиатуру inline
+
+        $keyboard->row([
+            Keyboard::inlineButton([ // Используем inlineButton вместо button
+                'text' => '🏢 Список комнат',
+                'callback_data' => 'room_list'
+            ]),
+            Keyboard::inlineButton([
+                'text' => '📅 Мои бронирования',
+                'callback_data' => 'my_bookings'
             ])
-            ->row([
-                Keyboard::button(['text' => '➕ Новая бронь', 'callback_data' => 'new_booking']),
-                Keyboard::button(['text' => '❌ Отменить бронь', 'callback_data' => 'cancel_booking']),
-            ]);
+        ]);
+
+        $keyboard->row([
+            Keyboard::inlineButton([
+                'text' => '➕ Новая бронь',
+                'callback_data' => 'new_booking'
+            ]),
+            Keyboard::inlineButton([
+                'text' => '❌ Отменить бронь',
+                'callback_data' => 'cancel_booking'
+            ])
+        ]);
 
         $this->replyWithMessage([
-            'text' => 'Добро пожаловать в систему бронирования переговорных комнат!',
+            'text' => 'Добро пожаловать в систему бронирования!',
             'reply_markup' => $keyboard,
             'parse_mode' => 'HTML'
         ]);
