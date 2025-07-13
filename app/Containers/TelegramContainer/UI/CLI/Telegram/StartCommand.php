@@ -17,22 +17,22 @@ class StartCommand extends Command
         $keyboard->row([
             Keyboard::inlineButton([ // Используем inlineButton вместо button
                 'text' => '🏢 Список комнат',
-                'callback_data' => 'room_list'
+                'callback_data' => '/room_list'
             ]),
             Keyboard::inlineButton([
                 'text' => '📅 Мои бронирования',
-                'callback_data' => 'my_bookings'
+                'callback_data' => '/my_bookings'
             ])
         ]);
 
         $keyboard->row([
             Keyboard::inlineButton([
                 'text' => '➕ Новая бронь',
-                'callback_data' => 'new_booking'
+                'callback_data' => '/new_booking'
             ]),
             Keyboard::inlineButton([
                 'text' => '❌ Отменить бронь',
-                'callback_data' => 'cancel_booking'
+                'callback_data' => '/cancel_booking'
             ])
         ]);
 

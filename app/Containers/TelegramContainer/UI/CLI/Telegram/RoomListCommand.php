@@ -2,43 +2,24 @@
 
 namespace App\Containers\TelegramContainer\UI\CLI\Telegram;
 
-use App\Containers\RoomBookingContainer\Models\Room;
+use App\Containers\TelegramContainer\Services\TelegramService;
 use Telegram\Bot\Commands\Command;
-use Telegram\Bot\Keyboard\Keyboard;
+use Telegram\Bot\Exceptions\TelegramSDKException;
 
 class RoomListCommand extends Command
 {
     protected string $name = 'room_list';
     protected string $description = 'Показать список доступных комнат';
 
+    /**
+     * @throws TelegramSDKException
+     */
     public function handle(): void
     {
+        $service = app(TelegramService::class);
 
-        $rooms = Room::query()->get();
+        $chatId = $this->getUpdate()->getChat()->get('id');
 
-        if ($rooms->isEmpty()) {
-            $this->replyWithMessage([
-                'text' => 'Нет доступных переговорных комнат',
-                'parse_mode' => 'HTML'
-            ]);
-            return;
-        }
-
-        $keyboard = Keyboard::make()->inline();
-
-        foreach ($rooms as $room) {
-            $keyboard->row([
-                Keyboard::inlineButton([
-                    'text' => "🏢 {$room->title} ({$room->capacity} чел.)",
-                    'callback_data' => "room_detail_{$room->id}"
-                ])
-            ]);
-        }
-
-        $this->replyWithMessage([
-            'text' => '📋 <b>Список переговорных комнат</b>',
-            'reply_markup' => $keyboard,
-            'parse_mode' => 'HTML'
-        ]);
+        $service->generateRoomListKeyboard($chatId);
     }
 }
