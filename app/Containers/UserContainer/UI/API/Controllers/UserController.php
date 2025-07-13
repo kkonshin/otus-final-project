@@ -2,7 +2,7 @@
 
 namespace App\Containers\UserContainer\UI\API\Controllers;
 
-use App\Containers\CoreContainer\Exceptions\ServiceUnavailableException;
+use App\Containers\Core\Exceptions\ServiceUnavailableException;
 use App\Containers\UserContainer\Actions\RegistrationUserAction;
 use App\Containers\UserContainer\Contracts\LoginUserActionContract;
 use App\Containers\UserContainer\Transporters\LoginUserData;
@@ -10,6 +10,7 @@ use App\Containers\UserContainer\Transporters\RegistrationUserData;
 use App\Containers\UserContainer\UI\API\Requests\LoginRequest;
 use App\Containers\UserContainer\UI\API\Requests\RegistrationRequest;
 use App\Containers\UserContainer\UI\API\Resources\RegistrationUserResource;
+use App\Containers\UserContainer\UI\API\Resources\UserInfoResource;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
 
@@ -59,6 +60,27 @@ class UserController extends Controller
                 'data' => [
                     'user' => new RegistrationUserResource($loginResponse->user),
                     'token' => $loginResponse->token,
+                ],
+            ]);
+        } catch (\Throwable $e) {
+            report($e);
+            throw new ServiceUnavailableException();
+        }
+    }
+
+    /**
+     * Информация о текущем пользователе
+     *
+     * @return JsonResponse
+     * @throws ServiceUnavailableException
+     */
+    public function info(): JsonResponse
+    {
+        try {
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'user' => UserInfoResource::make(auth()->user()),
                 ],
             ]);
         } catch (\Throwable $e) {
