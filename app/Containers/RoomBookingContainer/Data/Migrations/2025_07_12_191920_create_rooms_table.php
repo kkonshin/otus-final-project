@@ -17,8 +17,8 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->integer('capacity');
             $table->integer('floor');
-            $table->timestamp('available_from')->nullable();
-            $table->timestamp('available_to')->nullable();
+            $table->time('available_from')->nullable();
+            $table->time('available_to')->nullable();
             $table->timestamps();
         });
     }
