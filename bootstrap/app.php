@@ -21,7 +21,7 @@ return Application::configure(basePath: dirname(__DIR__))
         //
     })
     ->withCommands([
-//        __DIR__.'/../app/Containers/UserContainer/UI/CLI/Commands',
+        __DIR__.'/../app/Containers/TelegramContainer/UI/CLI/Commands',
     ])
 //    ->withSchedule(function (Schedule $schedule) {
 ////        $schedule->command('passport:purge --expired')->daily();
