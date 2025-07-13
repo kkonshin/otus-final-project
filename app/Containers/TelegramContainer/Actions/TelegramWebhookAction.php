@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace App\Containers\TelegramContainer\Actions;
 
-use App\Containers\RoomBookingContainer\Models\Room;
 use App\Containers\TelegramContainer\Contracts\TelegramWebhookActionContract;
+use App\Containers\TelegramContainer\Services\TelegramService;
 use Telegram\Bot\Exceptions\TelegramSDKException;
-use Telegram\Bot\Keyboard\Keyboard;
 use Telegram\Bot\Laravel\Facades\Telegram;
 use Telegram\Bot\Objects\CallbackQuery;
 use Throwable;
@@ -59,19 +58,11 @@ final class TelegramWebhookAction implements TelegramWebhookActionContract
 
         // Обрабатываем в фоновом режиме (если операция долгая)
         dispatch(function() use ($data, $chatId, $messageId) {
-            try {
-                switch ($data) {
-                    case 'room_list':
-                        $this->executeRoomListCommand($chatId);
-                        break;
-                    // Другие обработчики...
-                }
-            } catch (Throwable $e) {
-                report($e);
-                Telegram::sendMessage([
-                    'chat_id' => $chatId,
-                    'text' => 'Произошла ошибка при обработке запроса'
-                ]);
+            switch ($data) {
+                case '/room_list':
+                    $this->executeRoomListCommand($chatId);
+                    break;
+                // Другие обработчики...
             }
         });
     }
@@ -84,24 +75,8 @@ final class TelegramWebhookAction implements TelegramWebhookActionContract
     protected function executeRoomListCommand($chatId): void
     {
         try {
-            $rooms = Room::query()->get();
-
-            $keyboard = Keyboard::make()->inline();
-
-            $rooms->each(function ($room) use ($keyboard) {
-                $keyboard->row([
-                    Keyboard::inlineButton([
-                        'text' => "🏢 $room->title",
-                        'callback_data' => "room_detail_$room->id"
-                    ])
-                ]);
-            });
-
-            Telegram::sendMessage([
-                'chat_id' => $chatId,
-                'text' => 'Список доступных комнат:',
-                'reply_markup' => $keyboard
-            ]);
+            $service = app(TelegramService::class);
+            $service->generateRoomListKeyboard($chatId);
         } catch (Throwable $e) {
             report($e);
             Telegram::sendMessage([
