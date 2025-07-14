@@ -25,7 +25,7 @@ final class ApiRouteServiceProvider extends ServiceProvider
      */
     public function map(): void
     {
-        Route::prefix('api/booking')
+        Route::prefix('api/v1/booking')
             ->middleware('api')
             ->namespace($this->namespace)
             ->group(base_path('app/Containers/BookingContainer/UI/API/Routes/api.php'));

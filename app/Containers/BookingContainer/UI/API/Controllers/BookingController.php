@@ -12,7 +12,7 @@ use App\Containers\BookingContainer\Transporters\UpdateBookingsRequestData;
 use App\Containers\BookingContainer\UI\API\Requests\CreateRequest;
 use App\Containers\BookingContainer\UI\API\Requests\UpdateRequest;
 use App\Containers\BookingContainer\UI\API\Resources\BookingResource;
-use App\Containers\CoreContainer\Exceptions\ServiceUnavailableException;
+use App\Containers\Core\Exceptions\ServiceUnavailableException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Carbon;
@@ -79,6 +79,7 @@ class BookingController extends Controller
 
             $booking = $createBookingsAction->execute(new CreateBookingsRequestData(
                 userId: $validated['user_id'],
+                roomId: $validated['room_id'],
                 startAt: new Carbon($validated['start_at']),
                 endAt: new Carbon($validated['end_at']),
             ));
@@ -110,6 +111,7 @@ class BookingController extends Controller
             $booking = $updateBookingsAction->execute(new UpdateBookingsRequestData(
                 id: $validated['id'],
                 userId: $validated['user_id'] ?? null,
+                roomId: $validated['room_id'] ?? null,
                 status: $validated['status'] ?? null,
                 startAt: empty($validated['start_at'])
                     ? null

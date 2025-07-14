@@ -31,6 +31,7 @@ class BookingRepository
     public function create(CreateBookingsRequestData $data): Booking {
         return Booking::query()->create([
             'user_id' => $data->userId,
+            'room_id' => $data->roomId,
             'start_at' => $data->startAt,
             'end_at' => $data->endAt,
         ]);
@@ -44,6 +45,7 @@ class BookingRepository
     public function update(string $id, UpdateBookingsRequestData $data): int {
         $updateData = [
             'user_id' => $data->userId,
+            'room_id' => $data->roomId,
             'status' => $data->status,
             'start_at' => $data->startAt,
             'end_at' => $data->endAt,

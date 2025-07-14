@@ -1,0 +1,12 @@
+### Создание брони
+PUT {{host}}/api/v1/booking
+Content-Type: application/json
+Accept: application/json
+
+{
+    "id": 1,
+    "user_id": 1,
+    "room_id": 1,
+    "start_at": "2025-07-21 6:00:00",
+    "end_at": "2025-07-22 17:00:00"
+}
