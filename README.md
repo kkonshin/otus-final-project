@@ -6,15 +6,9 @@
 
 `docker-compose exec app php artisan key:generate`
 
+`docker-compose exec app php artisan php artisan storage:link`
+
 `docker-compose exec app php artisan migrate`
-
-`
-docker-compose exec app chown -R www-data:www-data /var/www/public
-`
-
-`
-docker-compose exec app chmod -R 777 /var/www/storage
-`
 
 ## Пересобрать контейнер
 `docker-compose down
