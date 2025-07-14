@@ -10,7 +10,7 @@ class RoomBookingServiceProvider extends ServiceProvider
 {
     public function boot(): void
     {
-        $this->loadMigrationsFrom('app/Containers/RoomBookingContainer/Data/Migrations');
+        $this->loadMigrationsFrom('app/Containers/RoomBookingContainer/Migrations');
     }
 
     public function register(): void
