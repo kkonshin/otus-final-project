@@ -1,5 +1,5 @@
 ### Логин
-POST {{host}}/api/user/login
+POST {{host}}/api/v1/user/login
 Content-Type: application/json
 Accept: application/json
 

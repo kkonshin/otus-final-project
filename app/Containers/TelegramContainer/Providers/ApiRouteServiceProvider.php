@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Containers\UserContainer\Providers;
+namespace App\Containers\TelegramContainer\Providers;
 
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Route;
@@ -14,7 +14,7 @@ final class ApiRouteServiceProvider extends ServiceProvider
      *
      * @var string
      */
-    protected $namespace = 'App\Containers\UserContainer\UI\API\Controllers';
+    protected $namespace = 'App\Containers\TelegramContainer\UI\API\Controllers';
 
     /**
      * Called before routes are registered.
@@ -35,9 +35,9 @@ final class ApiRouteServiceProvider extends ServiceProvider
      */
     public function map(): void
     {
-        Route::prefix('api/v1/user')
+        Route::prefix('api/v1/telegram')
             ->middleware('api')
             ->namespace($this->namespace)
-            ->group(base_path('app/Containers/UserContainer/UI/API/Routes/api.php'));
+            ->group(base_path('app/Containers/TelegramContainer/UI/API/Routes/api.php'));
     }
 }
