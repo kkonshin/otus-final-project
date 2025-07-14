@@ -11,4 +11,5 @@ return [
     App\Containers\RoomBookingContainer\Providers\RoomBookingServiceProvider::class,
     Telegram\Bot\Laravel\TelegramServiceProvider::class,
     App\Containers\TelegramContainer\Providers\TelegramAppServiceProvider::class,
+    App\Containers\BookingContainer\Providers\BookingServiceProvider::class,
 ];
