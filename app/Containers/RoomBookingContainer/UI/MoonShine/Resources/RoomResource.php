@@ -184,11 +184,11 @@ class RoomResource extends ModelResource
             $mergeData['available_from'] = Carbon::make(
                 $requestData['available_from']
             )->format('H:i:s');
-        };
+        }
 
         if (!empty($requestData['available_to'])) {
             $mergeData['available_to'] = Carbon::make($requestData['available_to'])->format('H:i:s');
-        };
+        }
 
         if (!empty($mergeData)) {
             request()->merge($mergeData);
