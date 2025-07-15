@@ -83,6 +83,11 @@ class RoomResource extends ModelResource
                 ->withTime()
                 ->format("H:i")
                 ->sortable(),
+
+            Date::make('Дата создания', 'created_at')
+                ->withTime()
+                ->format("Y-m-d H:i:s")
+                ->default(now()->toDateTimeString()),
         ];
     }
 
@@ -96,7 +101,7 @@ class RoomResource extends ModelResource
 
                         Flex::make([
                             Text::make('Наименование', 'title')
-                                ->nullable(),
+                                ->required(),
 
                             Number::make('Вместимость', 'capacity')
                                 ->required()
@@ -105,16 +110,11 @@ class RoomResource extends ModelResource
                             Number::make('Этаж', 'floor')
                                 ->required()
                                 ->sortable(),
-
-                            Textarea::make('Описание', 'description')
-                                ->nullable(),
                         ]),
 
-                        Date::make('Дата создания', 'created_at')
-                            ->withTime()
-                            ->format("Y-m-d H:i:s")
-                            ->default(now()->toDateTimeString()),
-                    ])->icon('user-circle'),
+                        Textarea::make('Описание', 'description')
+                            ->nullable(),
+                    ])->icon('information-circle'),
 
                     Tab::make('Расписание', [
                         Collapse::make('Установить Расписание', [

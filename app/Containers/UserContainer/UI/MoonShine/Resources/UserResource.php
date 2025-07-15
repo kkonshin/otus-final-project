@@ -94,20 +94,17 @@ class UserResource extends ModelResource
 
                         Email::make('E-mail', 'email')
                             ->required(),
-
-                        Date::make('Дата создания', 'created_at')
-                            ->withTime()
-                            ->format("Y-m-d H:i:s")
-                            ->default(now()->toDateTimeString()),
-                    ])->icon('user-circle'),
+                    ])->icon('information-circle'),
 
                     Tab::make('Пароль', [
                         Collapse::make('Установить пароль', [
                             Password::make('Пароль', 'password')
+                                ->required()
                                 ->customAttributes(['autocomplete' => 'new-password'])
                                 ->eye(),
 
                             PasswordRepeat::make('Повторите пароль', 'password_repeat')
+                                ->required()
                                 ->customAttributes(['autocomplete' => 'confirm-password'])
                                 ->eye(),
                         ])->icon('lock-closed'),
