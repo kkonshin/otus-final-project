@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\Containers\RoomBookingContainer\UI\MoonShine\Resources\RoomResource;
 use App\Containers\UserContainer\UI\MoonShine\Resources\UserResource;
 use App\MoonShine\Resources\MoonShineUserResource;
 use App\MoonShine\Resources\MoonShineUserRoleResource;
@@ -27,6 +28,7 @@ class MoonShineServiceProvider extends ServiceProvider
                 MoonShineUserResource::class,
                 MoonShineUserRoleResource::class,
                 UserResource::class,
+                RoomResource::class,
             ])
             ->pages([
                 ...$config->getPages(),

@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace App\MoonShine\Layouts;
 
+use App\Containers\RoomBookingContainer\UI\MoonShine\Resources\RoomResource;
 use App\Containers\UserContainer\UI\MoonShine\Resources\UserResource;
 use MoonShine\ColorManager\ColorManager;
 use MoonShine\Contracts\ColorManager\ColorManagerContract;
 use MoonShine\Laravel\Layouts\AppLayout;
+use MoonShine\MenuManager\MenuGroup;
 use MoonShine\MenuManager\MenuItem;
 use MoonShine\UI\Components\{Layout\Layout};
 
@@ -24,7 +26,10 @@ final class MoonShineLayout extends AppLayout
     {
         return [
             ...parent::menu(),
-            MenuItem::make('Пользователи', UserResource::class),
+            MenuGroup::make('Приложение', [
+                MenuItem::make('Пользователи', UserResource::class),
+                MenuItem::make('Комнаты', RoomResource::class),
+            ]),
         ];
     }
 

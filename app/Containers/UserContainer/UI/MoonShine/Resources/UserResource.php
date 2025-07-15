@@ -23,8 +23,8 @@ use MoonShine\UI\Fields\Password;
 use MoonShine\UI\Fields\PasswordRepeat;
 use MoonShine\UI\Fields\Text;
 
-#[Icon('users')]
-#[Group('Приложение', 'users', translatable: true)]
+#[Icon('user-circle')]
+#[Group('Приложение', 'folder', translatable: true)]
 #[Order(1)]
 /**
  * @extends ModelResource<User>
@@ -35,7 +35,7 @@ class UserResource extends ModelResource
 
     protected string $column = 'email';
 
-    protected string $group = 'Приложение';
+    protected string $group = 'main';
 
     protected string $route = 'users';
 
