@@ -16,7 +16,8 @@
 5. [Работа с базой данных](#работа-с-базой-данных)
 6. [Настройка админ-панели MoonShine](#настройка-админ-панели-moonshine)
 7. [Команды для разработки](#команды-для-разработки)
-8. [Полезные ссылки](#полезные-ссылки)
+8. [Настройка Telegram бота](#настройка-telegram-бота)
+9. [Полезные ссылки](#полезные-ссылки)
 
 ### Основные возможности системы
 
@@ -121,6 +122,28 @@
    <br><br>
 5. [Официальная документация MoonShine](https://moonshine-laravel.com/ru/docs/3.x/index)
 
+### Настройка Telegram бота
+
+1. **Telegram Bot Token**
+   <br><br>
+   - Обратитесь к [@BotFather документации](https://core.telegram.org/bots#how-do-i-create-a-bot) и сгенерируйте токен.
+   - Откройте приложение Telegram и отправьте сообщение [@BotFather](https://t.me/botfather).
+   - Следуйте инструкциям, чтобы создать нового бота.
+   - После создания бота бот BotFather выдаст вам токен бота. Храните этот токен в безопасности, так как он понадобится вам для использования API Telegram Bot.
+   - Установите в ENV значение ``TELEGRAM_BOT_TOKEN=полученный_токен``
+   <br><br>
+   !!! Ваш токен бота — это его уникальный идентификатор. Храните его в надёжном месте, никому не сообщайте и нигде не публикуйте. Любой, у кого есть ваш токен, будет иметь полный контроль над вашим ботом.
+   <br><br>
+2. **Настройте Telegram webhook**
+   <br><br>
+    - Для локальной разработки можно использовать утилиту [CloudPub](https://cloudpub.ru/docs/)
+    - Опубликуйте ваш ресурс
+    - Установите в ENV значение TELEGRAM_WEBHOOK_URL=https://your_cloudpub_sub_domen.cloudpub.ru/api/v1/telegram/your_telegram_token/webhook
+    - Задайте webhook для Telegram при помощи команды:
+      <br> 
+      ```bash
+      docker-compose exec app php artisan telegram:webhook
+
 ### Команды для разработки
 - **Пересобрать контейнеры:**
     ```bash
@@ -144,3 +167,5 @@
 [Laravel документация](https://laravel.com/docs/12.x)
 
 [Docker документация](https://docs.docker.com/)
+
+[Telegram документация](https://core.telegram.org/bots#how-do-i-create-a-bot)

@@ -8,14 +8,21 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
 use Telegram\Bot\Objects\EditedMessage;
 
-
 /**
  * @method handleEditedMessage(EditedMessage|null $editedMessage)
  */
 class TelegramController extends Controller
 {
-    public function webhook(TelegramWebhookActionContract $telegramWebhookAction): JsonResponse
+    public function webhook(string $token, TelegramWebhookActionContract $telegramWebhookAction): JsonResponse
     {
+        if (
+            $token !== config('telegram.bots.bindroom_bot.token')
+            || !config('telegram.bots.bindroom_bot.enabled')
+        ) {
+            return response()->json([
+                'message' => 'Not Found',
+            ], 404);
+        }
         try {
             $telegramWebhookAction->execute();
 
