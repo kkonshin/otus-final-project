@@ -14,6 +14,8 @@ use MoonShine\Support\Attributes\Icon;
 use MoonShine\UI\Components\Collapse;
 use MoonShine\UI\Components\Layout\Box;
 use MoonShine\UI\Components\Layout\Flex;
+use MoonShine\UI\Components\Metrics\Wrapped\Metric;
+use MoonShine\UI\Components\Metrics\Wrapped\ValueMetric;
 use MoonShine\UI\Components\Tabs;
 use MoonShine\UI\Components\Tabs\Tab;
 use MoonShine\UI\Fields\Date;
@@ -195,5 +197,25 @@ class RoomResource extends ModelResource
         }
 
         return $item;
+    }
+
+    /**
+     * @return list<Metric>
+     */
+    protected function metrics(): array
+    {
+        return [
+            ValueMetric::make('Свободных')
+                ->value(fn() => Room::query()->count() - 2)
+                ->columnSpan(6)
+                ->icon('lock-open'),
+            ValueMetric::make('Всего')
+                ->value(fn() => Room::query()->count())
+                ->columnSpan(6)
+                ->icon('building-office'),
+            ValueMetric::make('Загруженность')
+                ->value(fn(): int => Room::query()->count() - 3)
+                ->progress(fn(): int => Room::query()->count()),
+        ];
     }
 }

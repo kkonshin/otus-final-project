@@ -57,7 +57,7 @@ return [
     // Storage
     'disk' => 'public',
     'disk_options' => [],
-    'cache' => 'file',
+    'cache' => 'redis',
 
     // Authentication and profile
     'auth' => [
