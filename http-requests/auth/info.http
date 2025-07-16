@@ -1,5 +1,5 @@
 ### Логин
-GET {{host}}/api/v1/user/me
+GET {{host}}/api/v1/user/info
 Content-Type: application/json
 Accept: application/json
 Authorization: Bearer {{auth_token}}
