@@ -13,6 +13,7 @@ use App\Containers\UserContainer\UI\API\Resources\RegistrationUserResource;
 use App\Containers\UserContainer\UI\API\Resources\UserInfoResource;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
+use Throwable;
 
 class UserController extends Controller
 {
@@ -27,7 +28,14 @@ class UserController extends Controller
     public function registration(RegistrationRequest $request, RegistrationUserAction $registrationUserAction): JsonResponse
     {
         try {
-            $user = $registrationUserAction->execute(RegistrationUserData::from($request->validated()));
+            $validated = $request->validated();
+
+            $user = $registrationUserAction->execute(new RegistrationUserData(
+                email: $validated['email'],
+                password: $validated['password'],
+                firstName: $validated['first_name'],
+                lastName: $validated['last_name']
+            ));
 
             return response()->json([
                 'success' => true,
@@ -36,7 +44,7 @@ class UserController extends Controller
                     'token' => $user->createToken('auth_token')->plainTextToken,
                 ],
             ], 201);
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             report($e);
             throw new ServiceUnavailableException();
         }
@@ -53,7 +61,12 @@ class UserController extends Controller
     public function login(LoginRequest $request, LoginUserActionContract $loginUserAction): JsonResponse
     {
         try {
-            $loginResponse = $loginUserAction->execute(LoginUserData::from($request->validated()));
+            $validated = $request->validated();
+
+            $loginResponse = $loginUserAction->execute(new LoginUserData(
+                email: $validated['email'],
+                password: $validated['password'],
+            ));
 
             return response()->json([
                 'success' => true,
@@ -62,7 +75,7 @@ class UserController extends Controller
                     'token' => $loginResponse->token,
                 ],
             ]);
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             report($e);
             throw new ServiceUnavailableException();
         }
@@ -83,7 +96,7 @@ class UserController extends Controller
                     'user' => UserInfoResource::make(auth()->user()),
                 ],
             ]);
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             report($e);
             throw new ServiceUnavailableException();
         }
