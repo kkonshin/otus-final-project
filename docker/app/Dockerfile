@@ -1,5 +1,8 @@
 FROM php:8.4-fpm
 
+ARG PUID
+ARG PGID
+
 RUN apt-get update && apt-get install -y \
     apt-utils \
     libpq-dev \
@@ -24,14 +27,17 @@ RUN pecl channel-update pecl.php.net && \
     pecl install xdebug && \
     docker-php-ext-enable xdebug
 
-ENV COMPOSER_ALLOW_SUPERUSER=1
-
 # Install composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+RUN groupmod -o -g ${PGID} www-data && \
+    usermod -o -u ${PUID} -g www-data www-data
 
 # Set working directory
 WORKDIR /var/www
 
+USER www-data
 # Expose port 9000 and start php-fpm server
 EXPOSE 9000
+
 CMD ["php-fpm"]
