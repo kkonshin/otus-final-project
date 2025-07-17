@@ -4,6 +4,9 @@ services:
         build:
             context: .
             dockerfile: docker/app/Dockerfile
+            args:
+                PGID: "${PGID:-1000}"
+                PUID: "${PUID:-1000}"
         image: laravel-app
         container_name: "${APP_NAME}-app"
         restart: unless-stopped
@@ -27,7 +30,7 @@ services:
         restart: unless-stopped
         tty: true
         ports:
-            - "8080:80"
+            - "${APP_PORT}:80"
             - "443:443"
         volumes:
             - ./:/var/www
