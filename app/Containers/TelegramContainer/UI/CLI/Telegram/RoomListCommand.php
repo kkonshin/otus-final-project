@@ -19,7 +19,8 @@ class RoomListCommand extends Command
         $service = app(TelegramService::class);
 
         $chatId = $this->getUpdate()->getChat()->get('id');
+        $messageId = $this->getUpdate()->getMessage()->get('id');
 
-        $service->generateRoomListKeyboard($chatId);
+        $service->generateRoomListKeyboard($chatId, 1, $messageId);
     }
 }

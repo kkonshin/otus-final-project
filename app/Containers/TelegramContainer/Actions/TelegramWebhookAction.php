@@ -62,7 +62,7 @@ final class TelegramWebhookAction implements TelegramWebhookActionContract
                 $service = app(TelegramService::class);
 
                 if ($data === '/room_list') {
-                    $service->generateRoomListKeyboard($chatId);
+                    $service->generateRoomListKeyboard($chatId, 1, $messageId);
                 }
                 elseif (str_starts_with($data, '/rooms_page_')) {
                     $page = (int) str_replace('/rooms_page_', '', $data);
