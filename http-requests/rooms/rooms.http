@@ -1,0 +1,23 @@
+###
+## Получений списка всех комнат
+# @name get-all
+GET {{host}}/api/v1/rooms/all
+
+###
+
+GET {{host}}/api/v1/rooms/booked
+
+###
+
+GET {{host}}/api/v1/rooms/available
+
+###
+// TODO room_id var
+GET {{host}}/api/v1/rooms/equipment
+    ?rooms[]=1&rooms[]=2
+
+###
+
+## Получение комнаты по id
+# @name get-by-id
+GET {{host}}/api/v1/rooms/153

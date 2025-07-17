@@ -1,0 +1,11 @@
+### Создание брони
+POST {{host}}/api/v1/booking
+Content-Type: application/json
+Accept: application/json
+
+{
+    "user_id": 1,
+    "room_id": 153,
+    "start_at": "2025-07-18 9:00:00",
+    "end_at": "2025-07-18 10:00:00"
+}
