@@ -255,13 +255,13 @@ class TelegramService
 
             // Проверяем, не занят ли слот
             $isBooked = $bookings->contains(function ($booking) use ($slotStart, $slotEnd) {
-                return $booking->start_at < $slotEnd && $booking->end_at > $slotStart;
+                return $slotStart < $booking->end_at->subMinute() && $slotEnd > $booking->start_at->addMinute();
             });
 
-            if (!$isBooked && $slotStart->hour > $now->hour) {
+            if (!$isBooked && $slotStart->hour >= $now->hour) {
                 $availableSlots[] = [
                     'time' => $slotStart->format('H:i') . ' - ' . $slotEnd->format('H:i'),
-                    'start' => $slotStart->toDateTimeString(),
+                    'start' => $slotStart->format('Y-m-d H:i'),
                 ];
             }
         }
@@ -280,19 +280,30 @@ class TelegramService
      */
     private function sendOrEditMessage($chatId, array $message, ?int $editMessageId = null): void
     {
+        $currentHash = $this->generateMessageHash($message);
+
         try {
-            if ($editMessageId) {
-                Telegram::editMessageText(array_merge($message, [
-                    'message_id' => $editMessageId
-                ]));
-                $this->cacheLastMessageId($chatId, $editMessageId);
+            if (isset($editMessageId)) {
+                $cacheKey = self::CACHE_PREFIX."_{$chatId}_$editMessageId";
+                $lastHash = Cache::get($cacheKey);
+
+                if ($lastHash !== $currentHash) {
+                    Telegram::editMessageText(array_merge($message, [
+                        'message_id' => $editMessageId
+                    ]));
+
+                    Cache::put($cacheKey, $currentHash, self::CACHE_TIME);
+                }
             } else {
                 $sentMessage = Telegram::sendMessage($message);
-                $this->cacheLastMessageId($chatId, $sentMessage->messageId);
+                Cache::put(self::CACHE_PREFIX."_{$chatId}_$sentMessage->messageId", $currentHash, self::CACHE_TIME);
             }
-        } catch (Throwable) {
-            $sentMessage = Telegram::sendMessage($message);
-            $this->cacheLastMessageId($chatId, $sentMessage->messageId);
+        } catch (Throwable $e) {
+            if (!str_contains($e->getMessage(), 'message is not modified')) {
+                report($e);
+                $sentMessage = Telegram::sendMessage($message);
+                Cache::put(self::CACHE_PREFIX."_{$chatId}_$sentMessage->messageId", $currentHash, self::CACHE_TIME);
+            }
         }
     }
 
@@ -371,12 +382,39 @@ class TelegramService
     }
 
     /**
-     * @param $chatId
-     * @param $messageId
-     * @return void
+     * Генерирует хеш для сообщения, учитывая текст и клавиатуру
+     *
+     * @param array $message Массив параметров сообщения
+     * @return string Уникальный хеш для проверки изменений
      */
-    public function cacheLastMessageId($chatId, $messageId): void
+    protected function generateMessageHash(array $message): string
     {
-        Cache::put(self::CACHE_PREFIX . $chatId, $messageId, self::CACHE_TIME);
+        // 1. Нормализация текста
+        $text = $message['text'] ?? '';
+
+        // Удаляем HTML-теги и лишние пробелы
+        $cleanText = trim(strip_tags($text));
+
+        // 2. Нормализация клавиатуры
+        $keyboard = $message['reply_markup'] ?? [];
+
+        // Если это объект Keyboard - преобразуем в массив
+        if ($keyboard instanceof Keyboard) {
+            $keyboard = $keyboard->toArray();
+        }
+
+        // 3. Подготовка данных для хеширования
+        $hashData = [
+            'text' => $cleanText,
+            'keyboard' => $keyboard,
+            'parse_mode' => $message['parse_mode'] ?? null
+        ];
+
+        // 4. Генерация стабильного JSON
+        $jsonFlags = JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES;
+        $jsonString = json_encode($hashData, $jsonFlags);
+
+        // 5. Создание хеша
+        return md5($jsonString);
     }
 }
