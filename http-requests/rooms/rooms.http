@@ -1,6 +1,5 @@
 ### GET request to example server
 GET {{host}}/api/v1/rooms/all
-    ?generated-in=PhpStorm
 
 ###
 
@@ -14,3 +13,7 @@ GET {{host}}/api/v1/rooms/available
 // TODO room_id var
 GET {{host}}/api/v1/rooms/equipment
     ?rooms[]=1&rooms[]=2
+
+###
+
+GET {{host}}/api/v1/rooms/153
