@@ -5,7 +5,7 @@ Accept: application/json
 
 {
     "user_id": 1,
-    "room_id": 1,
-    "start_at": "2025-07-15 6:00:00",
-    "end_at": "2025-07-20 17:00:00"
+    "room_id": 153,
+    "start_at": "2025-07-18 9:00:00",
+    "end_at": "2025-07-18 10:00:00"
 }

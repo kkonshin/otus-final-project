@@ -1,4 +1,6 @@
-### GET request to example server
+###
+## Получений списка всех комнат
+# @name get-all
 GET {{host}}/api/v1/rooms/all
 
 ###
@@ -16,4 +18,6 @@ GET {{host}}/api/v1/rooms/equipment
 
 ###
 
+## Получение комнаты по id
+# @name get-by-id
 GET {{host}}/api/v1/rooms/153
