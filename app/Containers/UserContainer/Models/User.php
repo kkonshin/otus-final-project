@@ -2,10 +2,12 @@
 
 namespace App\Containers\UserContainer\Models;
 
+use App\Containers\UserContainer\Factory\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 class User extends Authenticatable
 {
@@ -41,5 +43,12 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * @return UserFactory|Factory
+     */
+    protected static function newFactory(): UserFactory|Factory {
+        return UserFactory::new();
     }
 }
