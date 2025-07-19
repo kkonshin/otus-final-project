@@ -1,0 +1,10 @@
+### Создание брони
+POST {{host}}/api/v1/equipment/room
+Content-Type: application/json
+Accept: application/json
+
+{
+    "equipment_id": 1,
+    "room_id": 1,
+    "quantity": 11
+}
