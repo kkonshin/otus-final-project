@@ -87,7 +87,7 @@ class BookingController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => "Комната успешно забронирована комната",
+                'message' => "Комната успешно забронирована",
                 'data' => new BookingResource($booking),
             ], 201);
         } catch (HttpResponseException $e) {
