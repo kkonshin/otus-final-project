@@ -13,6 +13,7 @@ use App\Containers\BookingContainer\UI\API\Requests\CreateRequest;
 use App\Containers\BookingContainer\UI\API\Requests\UpdateRequest;
 use App\Containers\BookingContainer\UI\API\Resources\BookingResource;
 use App\Containers\Core\Exceptions\ServiceUnavailableException;
+use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Carbon;
@@ -89,6 +90,8 @@ class BookingController extends Controller
                 'message' => "Комната успешно забронирована комната",
                 'data' => new BookingResource($booking),
             ], 201);
+        } catch (HttpResponseException $e) {
+            throw $e;
         } catch (Throwable $e) {
             report($e);
             throw new ServiceUnavailableException();

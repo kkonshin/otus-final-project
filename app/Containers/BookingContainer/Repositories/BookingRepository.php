@@ -2,10 +2,12 @@
 
 namespace App\Containers\BookingContainer\Repositories;
 
+use App\Containers\BookingContainer\Enums\Status;
 use App\Containers\BookingContainer\Models\Booking;
 use App\Containers\BookingContainer\Transporters\CreateBookingsRequestData;
 use App\Containers\BookingContainer\Transporters\UpdateBookingsRequestData;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Carbon;
 
 class BookingRepository
 {
@@ -67,4 +69,18 @@ class BookingRepository
             ->where('id', $id)
             ->delete();
     }
+
+    /**
+     * @param Carbon $startAt
+     * @param Carbon $endAt
+     * @return Collection
+     */
+    public function getBooked(Carbon $startAt, Carbon $endAt): Collection {
+        return Booking::query()
+            ->where('status', '!=', Status::DECLINED)
+            ->whereBetween('start_at', [$startAt, $endAt->addSeconds(-1)])
+            ->orWhereBetween('end_at', [$startAt->addSecond(), $endAt])
+            ->get();
+    }
+
 }
