@@ -1,0 +1,9 @@
+### Создание брони
+PUT {{host}}/api/v1/booking
+Content-Type: application/json
+Accept: application/json
+
+{
+    "id": 5,
+    "title": "test 2"
+}

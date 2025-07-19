@@ -1,0 +1,2 @@
+### Создание брони
+DELETE {{host}}/api/v1/equipment/room/1
