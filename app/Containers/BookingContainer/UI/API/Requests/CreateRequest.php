@@ -3,6 +3,7 @@
 namespace App\Containers\BookingContainer\UI\API\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Carbon;
 use Illuminate\Validation\Rule;
 
 class CreateRequest extends FormRequest
@@ -24,8 +25,27 @@ class CreateRequest extends FormRequest
         return [
             'user_id' => ['required', 'integer', Rule::exists('users', 'id')],
             'room_id' => ['required', 'integer', Rule::exists('rooms', 'id')],
-            'start_at' => ['required', 'date',  Rule::date()->after(now()->addDay())],
-            'end_at' => ['required', 'date', 'after:start_at'],
+            'start_at' => [
+                'required',
+                'date',
+                function ($attribute, $value, $fail) {
+                    $diffInMinutes = now()->addHours(2)->diffInMinutes($value);
+
+                    if ($diffInMinutes <= 119.9) {
+                        $fail("Дата должна быть от 2-х часов от нынешнего времени");
+                    }
+                }],
+            'end_at' => [
+                'required',
+                'date',
+                function ($attribute, $value, $fail) {
+                    $diffInMinutes = Carbon::create($this->input('start_at'))->diffInMinutes($value);
+
+                    $this->input('start_at');
+                    if ($diffInMinutes <= 59.9) {
+                        $fail("Дата должна быть от 2-х часов от нынешнего времени");
+                    }
+                }],
         ];
     }
 
