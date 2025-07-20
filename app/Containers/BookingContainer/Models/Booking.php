@@ -23,6 +23,7 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property-read Room $room
+ * @property-read User $user
  * @method static BookingFactory factory($count = null, $state = [])
  * @method static Builder<static>|Booking newModelQuery()
  * @method static Builder<static>|Booking newQuery()
