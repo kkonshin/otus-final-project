@@ -5,6 +5,7 @@ namespace App\Containers\TelegramContainer\Services;
 use App\Containers\BookingContainer\Models\Booking;
 use App\Containers\RoomBookingContainer\Models\Room;
 use App\Containers\UserContainer\Models\User;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Telegram\Bot\Exceptions\TelegramSDKException;
@@ -36,6 +37,29 @@ class TelegramService
         $message = [
             'chat_id' => $chatId,
             'text' => "📋 <b>Список переговорных комнат (Страница {$rooms->currentPage()} из {$rooms->lastPage()})</b>",
+            'reply_markup' => $keyboard,
+            'parse_mode' => 'HTML'
+        ];
+
+        $this->sendOrEditMessage($chatId, $message, $editMessageId);
+    }
+
+    /**
+     * Создает клавиатуру для списка забронированных комнат
+     *
+     * @param $chatId
+     * @param int|null $editMessageId
+     * @return void
+     * @throws TelegramSDKException
+     */
+    public function generateBookingList($chatId, ?int $editMessageId = null): void
+    {
+        $keyboard = $this->createBookingsKeyboard($chatId);
+
+        $today = today()->format("d.m.Y");
+        $message = [
+            'chat_id' => $chatId,
+            'text' => "📋 <b>Список забронированных комнат на 📅 $today</b>",
             'reply_markup' => $keyboard,
             'parse_mode' => 'HTML'
         ];
@@ -184,9 +208,8 @@ class TelegramService
         $start = Carbon::parse($startTime);
         $end = $start->copy()->addHour();
 
-        //TODO: Получить пользователя из БД по Telegram chatId ($userId)
         /** @var User $user */
-        $user = User::query()->firstOrFail();
+        $user = User::query()->where('telegram_chat_id', $userId)->firstOrFail();
 
         // Создаем запись о бронировании
         /** @var Booking $booking */
@@ -353,6 +376,59 @@ class TelegramService
             $keyboard->row($paginationRow);
         }
 
+        $keyboard->row([
+            Keyboard::inlineButton([
+                'text' => '📅 Мои бронирования',
+                'callback_data' => '/my_bookings'
+            ])
+        ]);
+
+        return $keyboard;
+    }
+
+    /**
+     * @param int $chatId
+     * @return Keyboard
+     */
+    private function createBookingsKeyboard(int $chatId): Keyboard
+    {
+        $bookings = Booking::query()
+            ->whereHas('user', function ($query) use ($chatId) {
+                $query->where('telegram_chat_id', $chatId);
+            })
+            ->where('status', 'accepted')
+            ->whereToday('start_at')
+            ->get();
+
+        $keyboard = Keyboard::make()->inline();
+
+        /** @var Booking $booking */
+        foreach ($bookings as $booking) {
+            $keyboard->row([
+                Keyboard::inlineButton([
+                    'text' => "🏢 {$booking->room->title}"
+                        . " 🕒 {$booking->start_at->format('H:i')}"
+                        . "- {$booking->end_at->format('H:i')}",
+                    'callback_data' => "/room_detail_{$booking->room->id}"
+                ]),
+                Keyboard::inlineButton([
+                    'text' => '❌ Отменить',
+                    'callback_data' => "/cancel_booking_$booking->id"
+                ])
+            ]);
+        }
+
+        $keyboard->row([
+            Keyboard::inlineButton([
+                'text' => '➕ Новая бронь',
+                'callback_data' => '/room_list'
+            ]),
+            Keyboard::inlineButton([
+                'text' => '🔄 Обновить',
+                'callback_data' => '/my_bookings'
+            ])
+        ]);
+
         return $keyboard;
     }
 
@@ -368,6 +444,13 @@ class TelegramService
             Keyboard::inlineButton([
                 'text' => '🕒 Забронировать время',
                 'callback_data' => "/booking_times_$room->id"
+            ])
+        ]);
+
+        $keyboard->row([
+            Keyboard::inlineButton([
+                'text' => '📅 Мои бронирования',
+                'callback_data' => '/my_bookings'
             ])
         ]);
 
