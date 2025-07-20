@@ -38,17 +38,6 @@ class StartCommand extends Command
                 ])
             ]);
 
-            $keyboard->row([
-                Keyboard::inlineButton([
-                    'text' => '➕ Новая бронь',
-                    'callback_data' => '/new_booking'
-                ]),
-                Keyboard::inlineButton([
-                    'text' => '❌ Отменить бронь',
-                    'callback_data' => '/cancel_booking'
-                ])
-            ]);
-
             $this->replyWithMessage([
                 'text' => 'Добро пожаловать в систему бронирования!',
                 'reply_markup' => $keyboard,

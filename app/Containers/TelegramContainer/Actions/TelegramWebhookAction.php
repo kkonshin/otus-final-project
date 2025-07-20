@@ -95,6 +95,8 @@ final class TelegramWebhookAction implements TelegramWebhookActionContract
                     $roomId = (int)$parts[2];
                     $startTime = $parts[3];
                     $service->finalizeBooking($chatId, $roomId, $startTime, $userTelegramId, $messageId);
+                } elseif ($data === '/my_bookings') {
+                    $service->generateBookingList($chatId, $messageId);
                 }
 
             } catch (Throwable $e) {
