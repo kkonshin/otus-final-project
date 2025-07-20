@@ -403,18 +403,29 @@ class TelegramService
 
         /** @var Booking $booking */
         foreach ($bookings as $booking) {
-            $keyboard->row([
-                Keyboard::inlineButton([
-                    'text' => "🏢 {$booking->room->title}"
-                        . " 🕒 {$booking->start_at->format('H:i')}"
-                        . "- {$booking->end_at->format('H:i')}",
-                    'callback_data' => "/room_detail_{$booking->room->id}"
-                ]),
-                Keyboard::inlineButton([
+            $mainButton  = Keyboard::inlineButton([
+                'text' => "🏢 {$booking->room->title}"
+                    . " 🕒 {$booking->start_at->format('H:i')}"
+                    . "- {$booking->end_at->format('H:i')}",
+                'callback_data' => "/room_detail_{$booking->room->id}"
+            ]);
+
+            $actionButton = match (true) {
+                $booking->start_at > now() && $booking->end_at > now() => Keyboard::inlineButton([
                     'text' => '❌ Отменить',
                     'callback_data' => "/cancel_booking_$booking->id"
-                ])
-            ]);
+                ]),
+                $booking->start_at < now() && $booking->end_at > now() => Keyboard::inlineButton([
+                    'text' => '🆙 Продлить',
+                    'callback_data' => "/booking_times_{$booking->room->id}"
+                ]),
+                default => Keyboard::inlineButton([
+                    'text' => '🔚 Завершена',
+                    'callback_data' => "/room_detail_{$booking->room->id}"
+                ]),
+            };
+
+            $keyboard->row([$mainButton, $actionButton]);
         }
 
         $keyboard->row([
