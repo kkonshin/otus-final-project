@@ -3,11 +3,13 @@
 namespace App\Containers\BookingContainer\Models;
 
 use App\Containers\BookingContainer\Factories\BookingFactory;
+use App\Containers\RoomBookingContainer\Models\Room;
 use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
 
 /**
@@ -59,5 +61,10 @@ class Booking extends Model
      */
     protected static function newFactory(): BookingFactory|Factory {
         return BookingFactory::new();
+    }
+
+    public function rooms(): BelongsTo
+    {
+        return $this->belongsTo(Room::class, 'room_id');
     }
 }
