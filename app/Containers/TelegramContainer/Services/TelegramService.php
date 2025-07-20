@@ -5,7 +5,6 @@ namespace App\Containers\TelegramContainer\Services;
 use App\Containers\BookingContainer\Models\Booking;
 use App\Containers\RoomBookingContainer\Models\Room;
 use App\Containers\UserContainer\Models\User;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Telegram\Bot\Exceptions\TelegramSDKException;
