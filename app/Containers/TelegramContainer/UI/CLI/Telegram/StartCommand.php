@@ -2,6 +2,8 @@
 
 namespace App\Containers\TelegramContainer\UI\CLI\Telegram;
 
+use App\Containers\UserContainer\Models\User;
+use Illuminate\Support\Facades\Cache;
 use Telegram\Bot\Commands\Command;
 use Telegram\Bot\Keyboard\Keyboard;
 
@@ -12,34 +14,46 @@ class StartCommand extends Command
 
     public function handle(): void
     {
-        $keyboard = Keyboard::make()->inline(); // Важно: делаем клавиатуру inline
+        $chatId = $this->getUpdate()->getChat()->get('id');
+        $user = User::query()->where('telegram_chat_id', $chatId)->first();
 
-        $keyboard->row([
-            Keyboard::inlineButton([ // Используем inlineButton вместо button
+        if (empty($user)) {
+            Cache::put("user_state_{$chatId}", 'awaiting_email', now()->addMinutes(10));
+
+            $this->replyWithMessage([
+                'text' => 'Введите ваш email для регистрации:',
+                'reply_markup' => Keyboard::forceReply()
+            ]);
+        } else {
+            $keyboard = Keyboard::make()->inline();
+
+            $keyboard->row([
+                Keyboard::inlineButton([
                 'text' => '🏢 Список комнат',
-                'callback_data' => '/room_list'
-            ]),
-            Keyboard::inlineButton([
-                'text' => '📅 Мои бронирования',
-                'callback_data' => '/my_bookings'
-            ])
-        ]);
+                    'callback_data' => '/room_list'
+                ]),
+                Keyboard::inlineButton([
+                    'text' => '📅 Мои бронирования',
+                    'callback_data' => '/my_bookings'
+                ])
+            ]);
 
-        $keyboard->row([
-            Keyboard::inlineButton([
-                'text' => '➕ Новая бронь',
-                'callback_data' => '/new_booking'
-            ]),
-            Keyboard::inlineButton([
-                'text' => '❌ Отменить бронь',
-                'callback_data' => '/cancel_booking'
-            ])
-        ]);
+            $keyboard->row([
+                Keyboard::inlineButton([
+                    'text' => '➕ Новая бронь',
+                    'callback_data' => '/new_booking'
+                ]),
+                Keyboard::inlineButton([
+                    'text' => '❌ Отменить бронь',
+                    'callback_data' => '/cancel_booking'
+                ])
+            ]);
 
-        $this->replyWithMessage([
-            'text' => 'Добро пожаловать в систему бронирования!',
-            'reply_markup' => $keyboard,
-            'parse_mode' => 'HTML'
-        ]);
+            $this->replyWithMessage([
+                'text' => 'Добро пожаловать в систему бронирования!',
+                'reply_markup' => $keyboard,
+                'parse_mode' => 'HTML'
+            ]);
+        }
     }
 }
