@@ -11,6 +11,7 @@ use App\Containers\UserContainer\Models\User;
 use App\Mail\TelegramConfirmationCode;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\RateLimiter;
 use Telegram\Bot\Api;
 use Telegram\Bot\Exceptions\TelegramSDKException;
 use Telegram\Bot\Laravel\Facades\Telegram;
@@ -133,6 +134,17 @@ final class TelegramWebhookAction implements TelegramWebhookActionContract
         $chatId = $update->message->chat->id;
         $email = $update->message->text;
 
+        if (RateLimiter::tooManyAttempts("telegram-email:$chatId", 5)) {
+            $seconds = RateLimiter::availableIn("telegram-email:$chatId");
+            Telegram::sendMessage([
+                'chat_id' => $chatId,
+                'text' => "🚫 Слишком много запросов. Попробуйте через ".ceil($seconds/60)." мин."
+            ]);
+            return;
+        }
+
+        RateLimiter::hit("telegram-email:$chatId", 300);
+
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             Telegram::sendMessage([
                 'chat_id' => $chatId,
@@ -176,45 +188,57 @@ final class TelegramWebhookAction implements TelegramWebhookActionContract
         $code = $update->message->text;
         $cacheKey = "telegram_confirm_$chatId";
 
-        $data = Cache::get($cacheKey);
-
-        if (!$data || $data['code'] != $code) {
+        if (RateLimiter::tooManyAttempts("telegram-confirm:$chatId", 3)) {
+            $seconds = RateLimiter::availableIn("telegram-confirm:$chatId");
             Telegram::sendMessage([
                 'chat_id' => $chatId,
-                'text' => '❌ Неверный код. Попробуйте ещё раз.'
+                'text' => "🚫 Слишком много попыток. Попробуйте через ".ceil($seconds/60)." минут."
             ]);
         } else {
-            User::query()->where('id', $data['user_id'])->update([
-                'telegram_chat_id' => $chatId,
-            ]);
+            RateLimiter::hit("telegram-confirm:$chatId", 300);
 
-            Cache::forget($cacheKey);
-            Cache::forget("user_state_$chatId");
+            $data = Cache::get($cacheKey);
 
-            Telegram::sendMessage([
-                'chat_id' => $chatId,
-                'text' => '✅ Ваш аккаунт успешно привязан!'
-            ]);
+            if (!$data || $data['code'] != $code) {
+                Telegram::sendMessage([
+                    'chat_id' => $chatId,
+                    'text' => '❌ Неверный код. Попробуйте ещё раз.'
+                ]);
+            } else {
+                RateLimiter::clear("telegram-confirm:$chatId");
 
-            $command = new StartCommand();
-            $command->setTelegram(Telegram::bot());
+                User::query()->where('id', $data['user_id'])->update([
+                    'telegram_chat_id' => $chatId,
+                ]);
 
-            $update = new Update([
-                'message' => [
-                    'chat' => ['id' => $chatId],
-                    'text' => '/start'
-                ]
-            ]);
+                Cache::forget($cacheKey);
+                Cache::forget("user_state_$chatId");
 
-            $command->make(
-                new Api(),
-                $update,
-                [
-                'offset' => 0,
-                'length' => 6,
-                'type' => 'bot_command'
-                ]
-            );
+                Telegram::sendMessage([
+                    'chat_id' => $chatId,
+                    'text' => '✅ Ваш аккаунт успешно привязан!'
+                ]);
+
+                $command = new StartCommand();
+                $command->setTelegram(Telegram::bot());
+
+                $update = new Update([
+                    'message' => [
+                        'chat' => ['id' => $chatId],
+                        'text' => '/start'
+                    ]
+                ]);
+
+                $command->make(
+                    new Api(),
+                    $update,
+                    [
+                        'offset' => 0,
+                        'length' => 6,
+                        'type' => 'bot_command'
+                    ]
+                );
+            }
         }
     }
 }
