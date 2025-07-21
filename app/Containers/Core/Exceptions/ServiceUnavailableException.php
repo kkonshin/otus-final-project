@@ -10,7 +10,7 @@ class ServiceUnavailableException extends CustomException
     {
         return response()->json([
             'success' => false,
-            'message' => 'Сервис временно не доступен.',
+            'message' => 'Сервис временно недоступен.',
         ], 500);
     }
 }

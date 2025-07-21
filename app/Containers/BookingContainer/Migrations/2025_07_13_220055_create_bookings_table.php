@@ -17,12 +17,19 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('room_id');
             $table->enum('status', Status::values())->default(Status::WAITING_CONFIRMATION->value);
-            $table->timestamp('start_at')->nullable();
-            $table->timestamp('end_at')->nullable();
+            $table->time('start_at')->nullable();
+            $table->time('end_at')->nullable();
             $table->timestamps();
 
-            $table->foreign('user_id')->references('id')->on('users');
-            $table->foreign('room_id')->references('id')->on('rooms');
+            $table->foreign('user_id')
+                ->references('id')
+                ->on('users')
+                ->onDelete('cascade');
+
+            $table->foreign('room_id')
+                ->references('id')
+                ->on('rooms')
+                ->onDelete('cascade');
         });
     }
 
