@@ -22,3 +22,10 @@
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
+.bash_history
+.composer/*
+
+.phpstorm.meta.php
+_ide_helper.php
+_ide_helper_models.php

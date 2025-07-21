@@ -1,56 +1,103 @@
 services:
-    laravel.test:
+    # PHP Service
+    app:
         build:
-            context: './vendor/laravel/sail/runtimes/8.4'
-            dockerfile: Dockerfile
+            context: .
+            dockerfile: docker/app/Dockerfile
             args:
-                WWWGROUP: '${WWWGROUP}'
-        image: 'sail-8.4/app'
+                PGID: "${PGID:-1000}"
+                PUID: "${PUID:-1000}"
+        image: laravel-app
+        container_name: "${APP_NAME}-app"
+        restart: unless-stopped
+        tty: true
+        working_dir: /var/www/
+        volumes:
+            - ./:/var/www/
+        depends_on:
+            - db
+        networks:
+            - app-network
+        environment:
+            PHP_IDE_CONFIG: "serverName=${APP_NAME}"
         extra_hosts:
             - 'host.docker.internal:host-gateway'
+
+    # Nginx Service
+    webserver:
+        image: nginx:stable-alpine
+        container_name: "${APP_NAME}-webserver"
+        restart: unless-stopped
+        tty: true
         ports:
-            - '${APP_PORT:-80}:80'
-            - '${VITE_PORT:-5173}:${VITE_PORT:-5173}'
-        environment:
-            WWWUSER: '${WWWUSER}'
-            LARAVEL_SAIL: 1
-            XDEBUG_MODE: '${SAIL_XDEBUG_MODE:-off}'
-            XDEBUG_CONFIG: '${SAIL_XDEBUG_CONFIG:-client_host=host.docker.internal}'
-            IGNITION_LOCAL_SITES_PATH: '${PWD}'
+            - "${APP_PORT}:80"
+            - "443:443"
         volumes:
-            - '.:/var/www/html'
+            - ./:/var/www
+            - ./docker/nginx/conf.d/:/etc/nginx/conf.d/
         networks:
-            - sail
+            - app-network
+
+    # PostgresSQL Service
+    db:
+        image: postgres:17-alpine
+        container_name: "${APP_NAME}-postgres"
+        restart: unless-stopped
+        tty: true
+        ports:
+            - "5432:5432"
+        environment:
+            POSTGRES_DB: laravel
+            POSTGRES_USER: laravel
+            POSTGRES_PASSWORD: secret
+        volumes:
+            - postgres-data:/var/lib/postgresql/data
+        networks:
+            - app-network
+
+    # Composer Service
+    composer:
+        image: composer:latest
+        container_name: "${APP_NAME}-composer"
+        volumes:
+            - ./:/var/www
+        working_dir: /var/www
         depends_on:
-            - pgsql
-            - redis
-    pgsql:
-        image: 'postgres:17'
-        ports:
-            - '${FORWARD_DB_PORT:-5432}:5432'
-        environment:
-            PGPASSWORD: '${DB_PASSWORD:-secret}'
-            POSTGRES_DB: '${DB_DATABASE}'
-            POSTGRES_USER: '${DB_USERNAME}'
-            POSTGRES_PASSWORD: '${DB_PASSWORD:-secret}'
-        volumes:
-            - 'sail-pgsql:/var/lib/postgresql/data'
-            - './vendor/laravel/sail/database/pgsql/create-testing-database.sql:/docker-entrypoint-initdb.d/10-create-testing-database.sql'
+            - app
         networks:
-            - sail
+            - app-network
+
+    # Node/NPM Service
+    node:
+        image: node:18
+        container_name: "${APP_NAME}-node"
+        volumes:
+            - ./:/var/www
+        working_dir: /var/www
+        entrypoint: ['npm']
+        networks:
+            - app-network
+
+    # Redis Service
     redis:
-        image: 'redis:alpine'
+        image: redis:alpine
+        container_name: "${APP_NAME}-redis"
         ports:
-            - '${FORWARD_REDIS_PORT:-6379}:6379'
-        volumes:
-            - 'sail-redis:/data'
+            - "6379:6379"
         networks:
-            - sail
-networks:
-    sail:
-        driver: bridge
+            - app-network
+
+    # Memcached Container
+    memcached:
+        image: memcached:latest
+        container_name: "${APP_NAME}-memcached"
+        networks:
+            - app-network
+
 volumes:
-    sail-pgsql:
+    postgres-data:
         driver: local
-    sail-redis:
-        driver: local
+
+networks:
+    app-network:
+        driver: bridge
