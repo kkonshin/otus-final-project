@@ -1,0 +1,8 @@
+### Создание брони
+POST {{host}}/api/v1/equipment
+Content-Type: application/json
+Accept: application/json
+
+{
+    "title": "test"
+}

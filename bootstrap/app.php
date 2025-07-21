@@ -23,9 +23,9 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withCommands([
         __DIR__.'/../app/Containers/TelegramContainer/UI/CLI/Commands',
     ])
-//    ->withSchedule(function (Schedule $schedule) {
-////        $schedule->command('passport:purge --expired')->daily();
-//    })
+    ->withSchedule(function (\Illuminate\Console\Scheduling\Schedule $schedule) {
+        $schedule->command('artisan telegram:notify')->everyFifteenMinutes();
+    })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
     })->create();
