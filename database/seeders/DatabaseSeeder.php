@@ -14,23 +14,23 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         Room::factory()
-            ->count(10)
+            ->count(5)
             ->create();
 
         User::factory()
-            ->count(20)
+            ->count(10)
             ->create();
 
         Booking::factory()
-            ->count(20)
+            ->count(10)
             ->create();
 
         Equipment::factory()
-            ->count(20)
+            ->count(10)
             ->create();
 
         RoomEquipment::factory()
-            ->count(20)
+            ->count(10)
             ->create();
     }
 }
