@@ -5,7 +5,6 @@ namespace App\Containers\RoomBookingContainer\Factories;
 use App\Containers\RoomBookingContainer\Models\Room;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Containers\Core\Handbooks\TimePeriodsHandbook;
-use Illuminate\Support\Carbon;
 
 /**
  * @extends Factory
@@ -21,11 +20,13 @@ class RoomFactory extends Factory
     {
         $availabilityPeriod = TimePeriodsHandbook::getRandomPeriod();
 
+        $title = fake()->unique()->randomNumber(3, true);
+
         return [
-            'title' => fake()->unique()->word(),
-            'description' => fake()->text(),
+            'title' => $title,
+            'description' => fake()->text(100),
             'capacity' => fake()->numberBetween(1, 100),
-            'floor' => fake()->numberBetween(1, 25),
+            'floor' => substr($title, 0, 1),
             'available_from' => $availabilityPeriod[0],
             'available_to' => $availabilityPeriod[1],
         ];
