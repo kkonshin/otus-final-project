@@ -2,6 +2,7 @@
 
 namespace App\Containers\BookingContainer\Models;
 
+use App\Containers\BookingContainer\Enums\Status;
 use App\Containers\BookingContainer\Factories\BookingFactory;
 use App\Containers\RoomBookingContainer\Models\Room;
 use App\Containers\UserContainer\Models\User;
@@ -57,6 +58,7 @@ class Booking extends Model
         return [
             'start_at' => 'datetime',
             'end_at' => 'datetime',
+            'status' => Status::class,
         ];
     }
 
