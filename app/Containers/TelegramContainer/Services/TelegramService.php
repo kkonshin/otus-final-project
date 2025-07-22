@@ -67,6 +67,50 @@ class TelegramService
     }
 
     /**
+     * @param $chatId
+     * @param $bookingId
+     * @param int|null $editMessageId
+     * @return void
+     * @throws TelegramSDKException
+     */
+    public function cancelBooking($chatId, $bookingId, ?int $editMessageId = null): void
+    {
+        $booking = Booking::query()
+            ->whereId($bookingId)
+            ->whereHas('user', function ($query) use ($chatId) {
+                $query->where('telegram_chat_id', $chatId);
+            })
+            ->firstOrFail();
+
+        $keyboard = Keyboard::make()->inline()
+            ->row([
+                Keyboard::inlineButton([
+                    'text' => '📋 Мои бронирования',
+                    'callback_data' => '/my_bookings'
+                ]),
+                Keyboard::inlineButton([
+                    'text' => '🏢 К списку комнат',
+                    'callback_data' => '/room_list'
+                ])
+            ]);
+
+        if ($booking->delete()) {
+            $textMessage = "⚠️ <b>Бронирование отменено!</b>";
+        } else {
+            $textMessage = "❌ <b>Произошла ошибка при отмене бронирования!</b>";
+        }
+
+        $message = [
+            'chat_id' => $chatId,
+            'text' => $textMessage,
+            'reply_markup' => $keyboard,
+            'parse_mode' => 'HTML'
+        ];
+
+        $this->sendOrEditMessage($chatId, $message, $editMessageId);
+    }
+
+    /**
      * Создает клавиатуру для детальной информации о комнате
      *
      * @param $chatId
