@@ -777,7 +777,11 @@ class TelegramService
             Keyboard::inlineButton([
                 'text' => '📅 Мои бронирования',
                 'callback_data' => '/my_bookings'
-            ])
+            ]),
+            Keyboard::inlineButton([
+                'text' => '🔄 Обновить',
+                'callback_data' => '/room_list'
+            ]),
         ]);
 
         return $keyboard;
