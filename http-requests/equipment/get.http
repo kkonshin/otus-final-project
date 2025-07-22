@@ -1,0 +1,2 @@
+### Создание брони
+GET {{host}}/api/v1/equipment

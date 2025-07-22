@@ -2,10 +2,12 @@
 
 namespace App\Containers\RoomBookingContainer\Models;
 
+use App\Containers\BookingContainer\Models\Booking;
 use App\Containers\RoomBookingContainer\Factories\RoomFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
 use Eloquent;
 
@@ -50,5 +52,10 @@ class Room extends Model
     protected static function newFactory(): RoomFactory
     {
         return RoomFactory::new();
+    }
+
+    public function bookings(): HasMany
+    {
+        return $this->HasMany(Booking::class);
     }
 }

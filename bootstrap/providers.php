@@ -1,6 +1,7 @@
 <?php
 
 return [
+    App\Containers\EquipmentContainer\Providers\EquipmentServiceProvider::class,
     App\Containers\BookingContainer\Providers\BookingServiceProvider::class,
     App\Containers\Common\ContainerTree\Providers\ContainerTreeServiceProvider::class,
     App\Containers\RoomBookingContainer\Providers\RoomBookingServiceProvider::class,
