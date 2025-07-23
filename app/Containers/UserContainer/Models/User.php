@@ -2,6 +2,7 @@
 
 namespace App\Containers\UserContainer\Models;
 
+use App\Containers\UserContainer\Factory\UserFactory;
 use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -11,6 +12,7 @@ use Illuminate\Notifications\DatabaseNotificationCollection;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Database\Eloquent\Factories\Factory;
 use Laravel\Sanctum\PersonalAccessToken;
 
 /**
@@ -75,5 +77,12 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * @return UserFactory|Factory
+     */
+    protected static function newFactory(): UserFactory|Factory {
+        return UserFactory::new();
     }
 }
