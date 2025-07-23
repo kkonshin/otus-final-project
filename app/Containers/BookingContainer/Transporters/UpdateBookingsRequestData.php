@@ -2,7 +2,7 @@
 
 namespace App\Containers\BookingContainer\Transporters;
 
-use DateTime;
+use Illuminate\Support\Carbon;
 use Spatie\LaravelData\Data;
 
 class UpdateBookingsRequestData extends Data
@@ -12,8 +12,8 @@ class UpdateBookingsRequestData extends Data
         public ?int $userId,
         public ?int $roomId,
         public ?string $status,
-        public ?DateTime $startAt,
-        public ?DateTime $endAt
+        public ?Carbon $startAt,
+        public ?Carbon $endAt
     ) {
     }
 }

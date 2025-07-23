@@ -17,8 +17,8 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('room_id');
             $table->enum('status', Status::values())->default(Status::WAITING_CONFIRMATION->value);
-            $table->time('start_at')->nullable();
-            $table->time('end_at')->nullable();
+            $table->dateTime('start_at')->nullable();
+            $table->dateTime('end_at')->nullable();
             $table->timestamps();
 
             $table->foreign('user_id')
