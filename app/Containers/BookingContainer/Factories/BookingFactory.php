@@ -4,7 +4,6 @@ namespace App\Containers\BookingContainer\Factories;
 
 use App\Containers\BookingContainer\Enums\Status;
 use App\Containers\BookingContainer\Models\Booking;
-use App\Containers\Core\Handbooks\TimePeriodsHandbook;
 use App\Containers\RoomBookingContainer\Models\Room;
 use App\Containers\UserContainer\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -23,14 +22,15 @@ class BookingFactory extends Factory
      */
     public function definition(): array
     {
-        $bookingPeriod = TimePeriodsHandbook::getRandomPeriod();
+        $randDays = random_int(1, 3);
+        $randHours = random_int(1, 4);
 
         return [
             'user_id' => $this->faker->randomElement(User::all())['id'],
             'room_id' => $this->faker->randomElement(Room::all())['id'],
             'status' => Status::values()[random_int(0, 2)],
-            'start_at' => $bookingPeriod[0],
-            'end_at' => $bookingPeriod[1],
+            'start_at' => now()->addDays($randDays),
+            'end_at' => now()->addDays($randDays)->addHours($randHours),
         ];
     }
 }

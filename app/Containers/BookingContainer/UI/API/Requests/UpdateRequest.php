@@ -26,8 +26,8 @@ class UpdateRequest extends FormRequest
             'user_id' => ['integer', Rule::exists('users', 'id')],
             'room_id' => ['integer', Rule::exists('rooms', 'id')],
             'status' => [Rule::in(Status::values())],
-            'start_at' => ['date',  Rule::date()->after(now()->addDay())],
-            'end_at' => ['date', 'after:start_at'],
+            'start_at' => ['required_with:end_at', 'date',  Rule::date()->after(now()->addDay())],
+            'end_at' => ['required_with:start_at', 'date', 'after:start_at'],
         ];
     }
 
