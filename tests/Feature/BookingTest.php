@@ -12,8 +12,7 @@ class BookingTest extends TestCase
     /**
      * Получения списка брони
      */
-    public function testGet(): void
-    {
+    public function testGet(): void {
         $response = $this->get('/api/v1/booking', [
             'Accept' => 'application/json',
         ]);
@@ -26,16 +25,15 @@ class BookingTest extends TestCase
     /**
      * Получение брони по id
      */
-    public function testOne(): void
-    {
+    public function testOne(): void {
         $user = User::query()->inRandomOrder()->firstOrFail();
         $room = Room::query()->inRandomOrder()->firstOrFail();
 
         $booking = Booking::query()->create([
             'user_id' => $user->id,
             'room_id' => $room->id,
-            'start_at' => now()->addDay(),
-            'end_at' => now()->addHours(28),
+            'start_at' => now()->addDays(5),
+            'end_at' => now()->addDays(5)->addHours(4),
         ]);
 
         $response = $this->get('/api/v1/booking/' . $booking->id, [
@@ -52,8 +50,7 @@ class BookingTest extends TestCase
     /**
      * Создание брони
      */
-    public function testCreate(): void
-    {
+    public function testCreate(): void {
         $user = User::query()->inRandomOrder()->firstOrFail();
         $room = Room::query()->inRandomOrder()->firstOrFail();
 
@@ -62,8 +59,8 @@ class BookingTest extends TestCase
             [
                 'user_id' => $user->id,
                 'room_id' => $room->id,
-                'start_at' => now()->addDay(),
-                'end_at' => now()->addHours(28),
+                'start_at' => now()->addDays(5),
+                'end_at' => now()->addDays(5)->addHours(4),
             ],
             [
                 'Accept' => 'application/json',
@@ -82,16 +79,15 @@ class BookingTest extends TestCase
     /**
      * Обновление брони
      */
-    public function testUpdate(): void
-    {
+    public function testUpdate(): void {
         $user = User::query()->inRandomOrder()->firstOrFail();
         $room = Room::query()->inRandomOrder()->firstOrFail();
 
         $booking = Booking::query()->create([
             'user_id' => $user->id,
             'room_id' => $room->id,
-            'start_at' => now()->addHours(25),
-            'end_at' => now()->addHours(26),
+            'start_at' => now()->addDays(5)->addHours(2),
+            'end_at' => now()->addDays(5)->addHours(3),
         ]);
 
         $response = $this->put(
@@ -100,8 +96,8 @@ class BookingTest extends TestCase
                 'id' => $booking->id,
                 'user_id' => $user->id,
                 'room_id' => $room->id,
-                'start_at' => now()->addDay(),
-                'end_at' => now()->addHours(28),
+                'start_at' => now()->addDays(5),
+                'end_at' => now()->addDays(5)->addHours(4),
             ],
             [
                 'Accept' => 'application/json',
@@ -118,16 +114,15 @@ class BookingTest extends TestCase
     /**
      * Удаление брони
      */
-    public function testDelete(): void
-    {
+    public function testDelete(): void {
         $user = User::query()->inRandomOrder()->firstOrFail();
         $room = Room::query()->inRandomOrder()->firstOrFail();
 
         $booking = Booking::query()->create([
             'user_id' => $user->id,
             'room_id' => $room->id,
-            'start_at' => now()->addHours(25),
-            'end_at' => now()->addHours(26),
+            'start_at' => now()->addDays(5)->addHours(2),
+            'end_at' => now()->addDays(5)->addHours(3),
         ]);
 
         $response = $this->delete(

@@ -10,30 +10,27 @@ class CreateRequest extends FormRequest
     /**
      * @return bool
      */
-    public function authorize(): bool
-    {
+    public function authorize(): bool {
         return true;
     }
 
     /**
      * @return array
      */
-    public function rules(): array
-    {
+    public function rules(): array {
 
         return [
             'user_id' => ['required', 'integer', Rule::exists('users', 'id')],
             'room_id' => ['required', 'integer', Rule::exists('rooms', 'id')],
-            'start_at' => ['required', 'date',  Rule::date()->after(now()->addDay())],
-            'end_at' => ['required', 'date', 'after:start_at'],
+            'start_at' => ['required', 'date'],
+            'end_at' => ['required', 'date'],
         ];
     }
 
     /**
      * @return string[]
      */
-    public function messages(): array
-    {
+    public function messages(): array {
         return [
             'user_id' => 'Неверно указан :attribute',
             'room_id' => 'Неверно указан :attribute',
@@ -45,8 +42,7 @@ class CreateRequest extends FormRequest
     /**
      * @return string[]
      */
-    public function attributes(): array
-    {
+    public function attributes(): array {
         return [
             'user_id' => 'ID пользователь',
             'room_id' => 'ID комнаты',

@@ -6,11 +6,7 @@ use App\Containers\TelegramContainer\Contracts\TelegramWebhookActionContract;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
-use Telegram\Bot\Objects\EditedMessage;
 
-/**
- * @method handleEditedMessage(EditedMessage|null $editedMessage)
- */
 class TelegramController extends Controller
 {
     public function webhook(string $token, TelegramWebhookActionContract $telegramWebhookAction): JsonResponse
