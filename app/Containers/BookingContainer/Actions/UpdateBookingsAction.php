@@ -42,16 +42,20 @@ final readonly class UpdateBookingsAction implements UpdateBookingActionContract
             $booked = $this->bookingRepository->getBooked($roomId, $data->startAt, $data->endAt);
 
             if ($booked->isNotEmpty()) {
-                throw new HttpResponseException(response()->json([
-                    'success' => false,
-                    'message' => 'Бронь на данное время занята',
-                ], Response::HTTP_CONFLICT));
+                $notSameBooking = $booked->where('id', '!=', $data->id)->first();
+
+                if (empty($notSameBooking) === false) {
+                    throw new HttpResponseException(response()->json([
+                        'success' => false,
+                        'message' => 'Бронь на данное время занята',
+                    ], Response::HTTP_CONFLICT));
+                }
             }
         }
 
         $updateResult = $this->bookingRepository->update($data->id, $data);
 
-        if(!$updateResult) {
+        if (!$updateResult) {
             throw new Exception('Строка не была обновлена');
         }
 

@@ -22,8 +22,8 @@ class BookingFactory extends Factory
      */
     public function definition(): array
     {
-        $randDays = random_int(1, 5);
-        $randHours = random_int(1, 24);
+        $randDays = random_int(1, 3);
+        $randHours = random_int(1, 4);
 
         return [
             'user_id' => $this->faker->randomElement(User::all())['id'],
