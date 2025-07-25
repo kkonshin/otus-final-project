@@ -1,18 +1,26 @@
-###
-## Получений списка всех комнат
+@host=https://otus-room-booking.ru
+
+## Получение списка всех комнат
 # @name get-all
 GET {{host}}/api/v1/rooms/all
 
 ###
 
+## Получение списка всех забронированных комнат
+# @name booked
 GET {{host}}/api/v1/rooms/booked
 
 ###
 
+## Получение списка доступных для бронирования комнат
+# @name available
 GET {{host}}/api/v1/rooms/available
 
 ###
+
 // TODO room_id var
+## Получение списка всех комнат с оборудованием
+# @name equipment
 GET {{host}}/api/v1/rooms/equipment
     ?rooms[]=1&rooms[]=2
 
@@ -20,4 +28,12 @@ GET {{host}}/api/v1/rooms/equipment
 
 ## Получение комнаты по id
 # @name get-by-id
-GET {{host}}/api/v1/rooms/153
+GET {{host}}/api/v1/rooms/2
+
+###
+
+## Добавление комнаты с оборудованием
+# @name add
+POST {{host}}/api/v1/rooms/add
+## TODO attach-equipment
+
