@@ -116,12 +116,12 @@ class RoomsController extends Controller
     }
 
     // TODO добавить equipment?
-    public function addRoomsToPool(): JsonResponse
+    public function addRoomToPool(): JsonResponse
     {
-
+        return response()->json(['status' => 'ok']);
     }
 
-    public function removeRoomsFromPool(): JsonResponse
+    public function removeRoomFromPool(): JsonResponse
     {
 
     }
