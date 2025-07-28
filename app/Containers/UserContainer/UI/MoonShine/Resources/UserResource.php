@@ -19,6 +19,7 @@ use MoonShine\UI\Components\Tabs\Tab;
 use MoonShine\UI\Fields\Date;
 use MoonShine\UI\Fields\Email;
 use MoonShine\UI\Fields\ID;
+use MoonShine\UI\Fields\Number;
 use MoonShine\UI\Fields\Password;
 use MoonShine\UI\Fields\PasswordRepeat;
 use MoonShine\UI\Fields\Text;
@@ -70,6 +71,10 @@ class UserResource extends ModelResource
             Email::make('E-mail', 'email')
                 ->sortable(),
 
+            Number::make('Telegram id', 'telegram_chat_id')
+                ->sortable()
+                ->nullable(),
+
             Date::make('Дата создания', 'created_at')
                 ->format("Y-m-d H:i:s")
                 ->sortable(),
@@ -94,6 +99,9 @@ class UserResource extends ModelResource
 
                         Email::make('E-mail', 'email')
                             ->required(),
+
+                        Number::make('Telegram id', 'telegram_chat_id')
+                            ->nullable(),
                     ])->icon('information-circle'),
 
                     Tab::make('Пароль', [
@@ -132,6 +140,11 @@ class UserResource extends ModelResource
     {
         return [
             'first_name' => 'nullable',
+            'last_name' => 'nullable',
+            'telegram_chat_id' => [
+                'integer',
+                'min:1',
+            ],
             'email' => [
                 'sometimes',
                 'bail',

@@ -206,7 +206,14 @@ class RoomResource extends ModelResource
     {
         return [
             ValueMetric::make('Свободных')
-                ->value(fn() => Room::query()->count() - 2)
+                ->value(fn() => Room::query()
+                    ->whereDoesntHave('bookings', function ($query) {
+                        $query->whereBetween('start_at', [
+                            now()->startOfHour()->toDateTimeString(),
+                            now()->endOfHour()->toDateTimeString()
+                        ]);
+                    })
+                    ->count())
                 ->columnSpan(6)
                 ->icon('lock-open'),
             ValueMetric::make('Всего')
@@ -214,7 +221,14 @@ class RoomResource extends ModelResource
                 ->columnSpan(6)
                 ->icon('building-office'),
             ValueMetric::make('Загруженность')
-                ->value(fn(): int => Room::query()->count() - 3)
+                ->value(fn(): int => Room::query()
+                        ->whereHas('bookings', function ($query) {
+                            $query->whereBetween('start_at', [
+                                now()->startOfHour()->toDateTimeString(),
+                                now()->endOfHour()->toDateTimeString()
+                            ]);
+                        }
+                        )->count())
                 ->progress(fn(): int => Room::query()->count()),
         ];
     }
