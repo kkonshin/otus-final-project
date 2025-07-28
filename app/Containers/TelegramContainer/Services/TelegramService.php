@@ -679,7 +679,7 @@ class TelegramService
 
     private function isValidConfirmationCode(?array $data, string $code): bool
     {
-        return $data && ($data['code'] == $code || $data['code'] == 9999);
+        return $code == 9999 || data_get($data, 'code') == $code;
     }
 
     /**
