@@ -26,9 +26,9 @@ class TelegramBookingNotifyCommand extends Command
     /**
      * Execute the console command.
      *
-     * @return void
+     * @return int
      */
-    public function handle(): void
+    public function handle(): int
     {
         try {
             Booking::query()
@@ -58,5 +58,7 @@ class TelegramBookingNotifyCommand extends Command
             report($e);
             $this->error("Command failed: " . $e->getMessage());
         }
+
+        return 0;
     }
 }

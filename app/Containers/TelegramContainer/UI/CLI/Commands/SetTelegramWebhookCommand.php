@@ -2,7 +2,6 @@
 
 namespace App\Containers\TelegramContainer\UI\CLI\Commands;
 
-use App\Containers\TelegramContainer\Exceptions\SetTelegramWebhookException;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 use Telegram\Bot\Laravel\Facades\Telegram;
@@ -27,15 +26,15 @@ class SetTelegramWebhookCommand extends Command
     /**
      * Execute the console command.
      *
-     * @return void
+     * @return int
      */
-    public function handle(): void
-    {
+    public function handle(): int {
         try {
             $url = $this->argument('url') ?? config('telegram.bots.bindroom_bot.webhook_url');
 
             if (empty($url)) {
-                throw new SetTelegramWebhookException('Webhook URL for Telegram not specified', 500);
+                $this->error('Webhook URL for Telegram not specified');
+                return 1;
             }
 
             $response = Telegram::setWebhook([
@@ -43,16 +42,18 @@ class SetTelegramWebhookCommand extends Command
             ]);
 
             if ($response !== true) {
-                throw new SetTelegramWebhookException('Telegram API returned false');
+                $this->error('Telegram API returned false');
+                return 1;
             }
 
             Log::info("Set Telegram Webhook successfully", [
                 'url' => $url,
             ]);
-
         } catch (Throwable $e) {
             report($e);
             $this->error("Command failed: " . $e->getMessage());
         }
+
+        return 0;
     }
 }
