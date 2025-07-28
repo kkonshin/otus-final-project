@@ -3,6 +3,7 @@
 namespace App\Containers\RoomBookingContainer\Models;
 
 use App\Containers\BookingContainer\Models\Booking;
+use App\Containers\EquipmentContainer\Models\RoomEquipment;
 use App\Containers\RoomBookingContainer\Factories\RoomFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -57,5 +58,12 @@ class Room extends Model
     public function bookings(): HasMany
     {
         return $this->HasMany(Booking::class);
+    }
+
+    /**
+     * @return HasMany
+     */
+    public function room_equipment(): HasMany {
+        return $this->hasMany(RoomEquipment::class);
     }
 }

@@ -2,11 +2,13 @@
 
 namespace App\Containers\UserContainer\Models;
 
+use App\Containers\BookingContainer\Models\Booking;
 use App\Containers\UserContainer\Factory\UserFactory;
 use Eloquent;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\DatabaseNotificationCollection;
 use Illuminate\Notifications\Notifiable;
@@ -84,5 +86,12 @@ class User extends Authenticatable
      */
     protected static function newFactory(): UserFactory|Factory {
         return UserFactory::new();
+    }
+
+    /**
+     * @return HasMany
+     */
+    public function bookings(): HasMany {
+        return $this->hasMany(Booking::class);
     }
 }
