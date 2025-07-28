@@ -12,11 +12,11 @@ Route::get('/booked', [RoomsController::class, 'getBooked'])
 Route::get('/available', [RoomsController::class, 'getAvailable'])
     ->name('get-available-rooms');
 
-// TODO массив параметров
 Route::get('/equipment', [RoomsController::class, 'getRoomsEquipment'])
     ->name('get-rooms-equipment');
 
-// TODO auth:sanctum
-// Route::middleware('auth:sanctum')
+Route::post('/add', [RoomsController::class, 'addRoomToPool'])
+    ->name('add-room');
+
 Route::get('/{id}', [RoomsController::class, 'getRoomById'])
     ->name('get-room-by-id');
